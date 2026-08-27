@@ -1,109 +1,74 @@
+import 'dart:math' as math;
+
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
+import 'package:appointment_setter/widgets/title_text.dart';
 import 'package:appointment_setter/widgets/vedio_widget.dart';
 import 'package:flutter/material.dart';
 
 class FacebookLeadAdsSection extends StatelessWidget {
-  const FacebookLeadAdsSection({Key? key}) : super(key: key);
+  const FacebookLeadAdsSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final horizontalMargin = screenWidth < 479 ? 16.0 : 40.0;
-    final maxContentWidth = 900.0;
-
-    // Video width adapts to screen but max at 768
-    final videoWidth = screenWidth * 0.8 > 768 ? 768.0 : screenWidth * 0.8;
-    final videoHeight = videoWidth * (432.2 / 768); // maintain aspect ratio
-
-    return Container(
-      color: Colors.white,
-      child: SingleChildScrollView(
-        padding:
-            EdgeInsets.symmetric(horizontal: horizontalMargin, vertical: 26),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: maxContentWidth),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    return SectionContainer(
+      // Sits between two white bands (the channel grid above, the testimonials
+      // below), so it takes the warm off-white step and the page reads as
+      // separate sections instead of one continuous sheet.
+      color: AppColors.surfaceAlt,
+      maxWidth: 900,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const TitleText(
+            text:
+                "Use Case: How to Automate Facebook\nLead Ads - Full Tutorial",
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text.rich(
+            textAlign: TextAlign.center,
+            TextSpan(
+              text:
+                  "First message in 10 seconds after form submission.\nThen human-like setting conversion and booking into your calendar.\nThis is how we achieve up to ",
+              style: AppText.bodyLarge(context),
               children: [
-                Text(
-                  "Use Case: How to Automate Facebook\nLead Ads - Full Tutorial",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: screenWidth < 479 ? 28 : 43.2,
-                  ),
-                  textAlign: TextAlign.center,
+                // The result is the point of the paragraph, so it lifts to the
+                // primary text colour and a heavier weight — the gold in this
+                // section belongs to the call to action.
+                TextSpan(
+                  text: "52% lead-to-booking rates.",
+                  style:
+                      AppText.bodyLarge(context, color: AppColors.textPrimary)
+                          .copyWith(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 10),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text:
-                        "First message in 10 seconds after form submission.\nThen human-like setting conversion and booking into your calendar.\nThis is how we achieve up to ",
-                    style: TextStyle(
-                      fontSize: screenWidth < 479 ? 14 : 18,
-                      height: 1.5,
-                      color: Colors.black,
-                    ),
-                    children: const [
-                      TextSpan(
-                        text: "52% lead-to-booking rates.",
-                        style: TextStyle(
-                          fontSize: 18,
-                          height: 1.5,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: screenWidth < 479 ? 40 : 64),
-                SizedBox(
-                  width: videoWidth,
-                  height: videoHeight,
-                  child: const YouTubePlayerWidget(videoId: 'ybcZQxpTrCs'),
-                ),
-                SizedBox(height: screenWidth < 479 ? 24 : 40),
-                SizedBox(
-                  width: screenWidth < 479 ? screenWidth * 0.7 : 225.27,
-                  height: 56,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6f2eff),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    onPressed: () {
-                      // Add your demo action here
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Get me a demo",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20.8,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        SizedBox(width: 8),
-                        Icon(
-                          Icons.arrow_forward_outlined,
-                          size: 25,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40), // extra bottom padding
               ],
             ),
           ),
-        ),
+          SizedBox(height: context.blockGap),
+          LayoutBuilder(
+            builder: (context, constraints) {
+              // The player already frames itself (16:9, rounded, clipped), so
+              // it only needs a readable maximum width here.
+              final videoWidth = math.min(constraints.maxWidth, 768.0);
+              return SizedBox(
+                width: videoWidth,
+                child: const YouTubePlayerWidget(videoId: 'ybcZQxpTrCs'),
+              );
+            },
+          ),
+          SizedBox(height: context.blockGap),
+          ActionButton(
+            text: "Get me a demo",
+            icon: Icons.arrow_forward_rounded,
+            size: ActionButtonSize.large,
+            expand: context.isMobile,
+            onPressed: () {
+              // Add your demo action here
+            },
+          ),
+        ],
       ),
     );
   }

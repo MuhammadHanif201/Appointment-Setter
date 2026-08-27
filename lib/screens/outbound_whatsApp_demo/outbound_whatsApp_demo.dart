@@ -1,206 +1,190 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
+import 'package:appointment_setter/widgets/title_text.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class OutboundWhatsAppDemo extends StatelessWidget {
-  const OutboundWhatsAppDemo({Key? key}) : super(key: key);
+  const OutboundWhatsAppDemo({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 479;
+    return SectionContainer(
+      // `background` and `surface` are both pure white, so a white card on a
+      // white band was held up by its hairline alone. The band steps down to
+      // the off-white so the card genuinely lifts off it.
+      color: AppColors.surfaceAlt,
+      child: Column(
+        children: [
+          const TitleText(text: "Try The Outbound\n WhatsApp Demo Below"),
+          SizedBox(height: context.blockGap),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 576),
+            child: const _DemoFormCard(),
+          ),
+        ],
+      ),
+    );
+  }
+}
 
-    final horizontalMargin = isMobile ? 16.0 : 168.0;
-    final horizontalPadding = isMobile ? 16.0 : 40.0;
-    final topPadding = isMobile ? 40.0 : 90.0;
+class _DemoFormCard extends StatelessWidget {
+  const _DemoFormCard();
 
-    final headingFontSize = isMobile ? 28.0 : 43.2;
-    final formWidth = isMobile ? screenWidth * 0.9 : 576.0;
-    final formHeight = isMobile ? null : 536.0;
-
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
       width: double.infinity,
-      color: Colors.white,
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: horizontalPadding, right: horizontalPadding, top: topPadding),
-        child:
-        Column(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                "Try The Outbound\n WhatsApp Demo Below",
-                style: GoogleFonts.inter(
-                  fontSize: headingFontSize,
-                  fontWeight: FontWeight.w700,
-                  height: 1.2,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: isMobile ? 12 : 16),
-            Container(
-              height: formHeight,
-              width: formWidth,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: SingleChildScrollView(
-                  // Added scrolling for small height devices
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "Receive an ",
-                          style: GoogleFonts.inter(
-                            fontSize: isMobile ? 18 : 24,
-                            height: 1.5,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "instant-follow-up ",
-                              style: GoogleFonts.inter(
-                                fontSize: isMobile ? 18 : 24,
-                                height: 1.5,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF6f2eff),
-                              ),
-                            ),
-                            TextSpan(
-                              text: "from our AI Setter",
-                              style: GoogleFonts.inter(
-                                fontSize: isMobile ? 18 : 24,
-                                height: 1.5,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Enter your Name",
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w700,
-                          fontSize: isMobile ? 14 : 16,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Enter your name",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.blue),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Enter your Email (only work email)",
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w700,
-                          fontSize: isMobile ? 14 : 16,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Enter your email",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.blue),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        "Enter your WhatsApp Phone Number",
-                        style: GoogleFonts.inter(
-                          fontWeight: FontWeight.w700,
-                          fontSize: isMobile ? 14 : 16,
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          hintText: "Enter your number",
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(11.2),
-                            borderSide: const BorderSide(color: Colors.blue),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 55,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF6f2eff),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            // Add your button onPressed logic here
-                          },
-                          child: Text(
-                            "Chat with Setter AI",
-                            style: GoogleFonts.inter(
-                              fontSize: isMobile ? 16 : 19.2,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Gap(40),
-          ],
+      padding: EdgeInsets.all(
+        context.responsive(
+          mobile: AppSpacing.s20,
+          tablet: AppSpacing.lg,
+          desktop: AppSpacing.xl,
         ),
       ),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.xl),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.card,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Two-tone ink rather than gold: the card already has one gold
+          // moment — the submit button, which is the whole point of it — and a
+          // gold headline in the same 576px panel would compete with it. The
+          // phrase steps up the ink ramp instead.
+          Text.rich(
+            TextSpan(
+              text: "Receive an ",
+              style: AppText.h3(context, color: AppColors.textSecondary),
+              children: [
+                TextSpan(
+                  text: "instant-follow-up ",
+                  style: AppText.h3(context, color: AppColors.textPrimary),
+                ),
+                TextSpan(
+                  text: "from our AI Setter",
+                  style: AppText.h3(context, color: AppColors.textSecondary),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          const _FormField(
+            label: "Enter your Name",
+            hintText: "Enter your name",
+            keyboardType: TextInputType.name,
+            autofillHints: [AutofillHints.name],
+          ),
+          const SizedBox(height: AppSpacing.s20),
+          const _FormField(
+            label: "Enter your Email (only work email)",
+            hintText: "Enter your email",
+            keyboardType: TextInputType.emailAddress,
+            autofillHints: [AutofillHints.email],
+          ),
+          const SizedBox(height: AppSpacing.s20),
+          const _FormField(
+            label: "Enter your WhatsApp Phone Number",
+            hintText: "Enter your number",
+            keyboardType: TextInputType.phone,
+            textInputAction: TextInputAction.done,
+            autofillHints: [AutofillHints.telephoneNumber],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          ActionButton(
+            text: "Chat with Setter AI",
+            size: ActionButtonSize.large,
+            expand: true,
+            onPressed: () {
+              // Add your button onPressed logic here
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// A labelled text field. The field itself is left to the global
+/// `inputDecorationTheme`, which owns the fill, the hairline border, the gold
+/// 1.5px focus ring and the red error border/message — the only thing added
+/// here is the label, which tracks the focus state.
+class _FormField extends StatefulWidget {
+  final String label;
+  final String hintText;
+  final TextInputType keyboardType;
+  final TextInputAction textInputAction;
+  final List<String> autofillHints;
+
+  const _FormField({
+    required this.label,
+    required this.hintText,
+    this.keyboardType = TextInputType.text,
+    this.textInputAction = TextInputAction.next,
+    this.autofillHints = const [],
+  });
+
+  @override
+  State<_FormField> createState() => _FormFieldState();
+}
+
+class _FormFieldState extends State<_FormField> {
+  final FocusNode _focusNode = FocusNode();
+  bool _focused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(_handleFocusChange);
+  }
+
+  void _handleFocusChange() {
+    if (_focused == _focusNode.hasFocus) return;
+    setState(() => _focused = _focusNode.hasFocus);
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_handleFocusChange);
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // A focused label is text, so the gold it lifts to is the readable ink
+    // step — the fill gold would drop it to 2.4:1 on white.
+    final Color labelColor =
+        _focused ? AppColors.primaryInk : AppColors.textPrimary;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        AnimatedDefaultTextStyle(
+          duration: AppDurations.fast,
+          curve: AppCurves.standard,
+          style: AppText.label(context, color: labelColor),
+          child: Text(widget.label),
+        ),
+        const SizedBox(height: AppSpacing.sm),
+        TextFormField(
+          focusNode: _focusNode,
+          keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
+          autofillHints: widget.autofillHints,
+          cursorColor: AppColors.primaryInk,
+          style: AppText.body(context, color: AppColors.textPrimary),
+          // Fill, hairline border, the gold focus ring and the red error
+          // border/message all come from the global `inputDecorationTheme`, so
+          // every field on the page is the same height and the same shape.
+          decoration: InputDecoration(hintText: widget.hintText),
+        ),
+      ],
     );
   }
 }

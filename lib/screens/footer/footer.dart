@@ -1,305 +1,436 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gap/gap.dart';
 
+/// A titled column of footer links.
+class _LinkGroup {
+  final String title;
+  final List<String> links;
+
+  const _LinkGroup(this.title, this.links);
+}
+
+/// A social destination: the glyph shown and the network it points at.
+///
+/// The label is not decoration — the Material set carries no brand marks, so
+/// the name is what tells a visitor which network an abstract glyph is for. It
+/// is exposed to both the pointer (tooltip) and the screen reader (semantics).
+class _SocialLink {
+  final IconData icon;
+  final String label;
+
+  const _SocialLink(this.icon, this.label);
+}
+
+const List<_LinkGroup> _primaryGroups = [
+  _LinkGroup('Links', [
+    'Book demo',
+    'Blog',
+    'Login',
+    'Help',
+    'Affiliate Program',
+    'Manage Subscription',
+  ]),
+  _LinkGroup('Solutions', [
+    'WhatsApp Appointment Setter',
+    'WhatsApp Reminder Software',
+    'Calendly Booking API',
+    'WhatsApp API',
+    'AI Sales Agent',
+  ]),
+  _LinkGroup('Free Tools', [
+    'Free Sales Tools',
+    'Appointment Setting Script Generator',
+    'WhatsApp Appointment Setting Script Generator',
+    'WhatsApp Link Generator',
+    'WhatsApp Button Generator',
+  ]),
+];
+
+const List<_LinkGroup> _legalGroups = [
+  _LinkGroup('Legal', [
+    'Privacy Policy',
+    'Terms and Conditions',
+  ]),
+  _LinkGroup('Industries', ['Solar']),
+];
+
+/// The muted band that closes the page.
+///
+/// It is [AppColors.surfaceMuted] — one step in from the white page, which is
+/// what makes it read as the end of the document without inverting the whole
+/// theme. Everything inside is deliberately quiet: links are secondary text
+/// that lift to primary on hover, headings are plain titles, and the only gold
+/// in the whole block is the Subscribe button.
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final double maxWidth = constraints.maxWidth;
+    final gap = context.blockGap;
 
-        // Define device breakpoints
-        bool isDesktop = maxWidth >= 1024;
-        bool isTablet = maxWidth >= 600 && maxWidth < 1024;
-        bool isMobile = maxWidth < 600;
-
-        return Container(
-          color: const Color(0xFF1E1E2F),
-          padding: const EdgeInsets.only(top: 40, bottom: 40),
-          width: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Top Section
-              Wrap(
-                spacing: 32,
-                runSpacing: 32,
-                direction: isMobile ? Axis.vertical : Axis.horizontal,
-                children: [
-                  _buildLinkColumn('Links', [
-                    'Book demo',
-                    'Blog',
-                    'Login',
-                    'Help',
-                    'Affiliate Program',
-                    'Manage Subscription',
-                  ]),
-                  _buildLinkColumn('Solutions', [
-                    'WhatsApp Appointment Setter',
-                    'WhatsApp Reminder Software',
-                    'Calendly Booking API',
-                    'WhatsApp API',
-                    'AI Sales Agent',
-                  ]),
-                  _buildLinkColumn('Free Tools', [
-                    'Free Sales Tools',
-                    'Appointment Setting Script Generator',
-                    'WhatsApp Appointment Setting Script Generator',
-                    'WhatsApp Link Generator',
-                    'WhatsApp Button Generator',
-                  ]),
-                  Gap(40),
-                  _buildEmailSubscribeColumn(),
-                ],
-              ),
-
-              const SizedBox(height: 40),
-
-              // Legal & Industry Section
-              Wrap(
-                spacing: 122,
-                runSpacing: 24,
-                direction: isMobile ? Axis.vertical : Axis.horizontal,
-                children: [
-                  _buildLinkColumn('Legal', [
-                    'Privacy Policy',
-                    'Terms and Conditions',
-                  ]),
-                  _buildLinkColumn('Industries', ['Solar']),
-                ],
-              ),
-
-              const SizedBox(height: 30),
-
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 24, right: 24),
-                    child: Row(
-                      children: [
-                        const Expanded(
-                          child: Divider(thickness: 1, color: Colors.grey),
-                        ),
-                        if (!isMobile)
-                          Container(
-                            margin: const EdgeInsets.only(left: 32, right: 32),
-                            child: Row(
-                              children: [
-                                const Text(
-                                  "Setter AI LLC",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                                const SizedBox(width: 40),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.youtube,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.facebook,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.twitter,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.instagram,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 10),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.linkedin,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        const Expanded(
-                          child: Divider(thickness: 1, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (isMobile)
-                    Padding(
-                      padding: const EdgeInsets.all(32),
-                      child: Column(
-                        children: [
-                          const Text("Setter AI LLC",
-                              style: TextStyle(color: Colors.grey)),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: FaIcon(
-                                  FontAwesomeIcons.youtube,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: FaIcon(
-                                  FontAwesomeIcons.facebook,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: FaIcon(
-                                  FontAwesomeIcons.twitter,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: FaIcon(
-                                  FontAwesomeIcons.instagram,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 10),
-                                child: FaIcon(
-                                  FontAwesomeIcons.whatsapp,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildLinkColumn(String title, List<String> links) {
-    return SizedBox(
-      width: 250,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24),
+    return SectionContainer(
+      color: AppColors.surfaceMuted,
+      // Ink has to be painted on a Material; the section is a plain Container,
+      // so give the whole footer a transparent one.
+      child: Material(
+        color: Colors.transparent,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 18)),
-            const SizedBox(height: 12),
-            for (var link in links)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Text(
-                  link,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    decoration: TextDecoration.underline,
-                    decorationColor: Colors.white,
-                  ),
-                ),
-              ),
+            const _FooterTop(),
+            SizedBox(height: gap),
+            _LinkColumnsGrid(
+              groups: _legalGroups,
+              columns: context.responsive(mobile: 1, tablet: 2, desktop: 3),
+            ),
+            SizedBox(height: gap),
+            const _FooterBottomBar(),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildEmailSubscribeColumn() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: SizedBox(
-        width: 300,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+/// Link columns beside the newsletter block on desktop, stacked below it
+/// everywhere else.
+class _FooterTop extends StatelessWidget {
+  const _FooterTop();
+
+  @override
+  Widget build(BuildContext context) {
+    final gap = context.blockGap;
+
+    if (context.isDesktop) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Expanded(
+            child: _LinkColumnsGrid(groups: _primaryGroups, columns: 3),
+          ),
+          SizedBox(width: gap),
+          const SizedBox(width: 320, child: _SubscribeColumn()),
+        ],
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _LinkColumnsGrid(
+          groups: _primaryGroups,
+          columns: context.isTablet ? 2 : 1,
+        ),
+        SizedBox(height: gap),
+        const _SubscribeColumn(),
+      ],
+    );
+  }
+}
+
+/// Lays [groups] out in [columns] equal-width columns that reflow instead of
+/// overflowing.
+class _LinkColumnsGrid extends StatelessWidget {
+  final List<_LinkGroup> groups;
+  final int columns;
+
+  const _LinkColumnsGrid({required this.groups, required this.columns});
+
+  @override
+  Widget build(BuildContext context) {
+    final gap = context.blockGap;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final width = columns <= 1
+            ? constraints.maxWidth
+            : (constraints.maxWidth - gap * (columns - 1)) / columns;
+
+        return Wrap(
+          spacing: gap,
+          runSpacing: gap,
           children: [
-            // Logos
-            Row(
-              children: [
-                Image.asset('assets/images/setter_ai.png',
-                    width: 144, height: 48),
-                const SizedBox(width: 16),
-                Image.asset('assets/images/meta.png', width: 85.33, height: 48),
-              ],
-            ),
-            const SizedBox(height: 64),
+            for (final group in groups)
+              SizedBox(width: width, child: _FooterLinkColumn(group: group)),
+          ],
+        );
+      },
+    );
+  }
+}
 
-            // Email Field
-            Container(
-              height: 56,
-              decoration: BoxDecoration(
-                color: const Color(0xFF2D2D40),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: TextField(
-                        style: const TextStyle(color: Colors.white),
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Enter your Email',
-                          hintStyle: TextStyle(color: Colors.grey),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    height: 56,
-                    width: 151,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      "Subscribe",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+class _FooterLinkColumn extends StatelessWidget {
+  final _LinkGroup group;
 
-            const SizedBox(height: 50),
-            SvgPicture.asset(
-              'assets/images/featured.svg',
-              width: 250,
-              height: 54,
+  const _FooterLinkColumn({required this.group});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Matches the horizontal inset the links carry for their hover target,
+        // so the heading and the list share one left edge.
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+          child: Text(group.title, style: AppText.title(context)),
+        ),
+        const SizedBox(height: AppSpacing.s12),
+        for (final link in group.links) _FooterLink(label: link),
+      ],
+    );
+  }
+}
+
+class _FooterLink extends StatefulWidget {
+  final String label;
+
+  const _FooterLink({required this.label});
+
+  @override
+  State<_FooterLink> createState() => _FooterLinkState();
+}
+
+class _FooterLinkState extends State<_FooterLink> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    // Rest is secondary copy; hover lifts it to primary ink. Gold is reserved
+    // for the Subscribe button, so a hovered link darkens rather than tints.
+    final color = _hovered ? AppColors.textPrimary : AppColors.textSecondary;
+
+    return InkWell(
+      onTap: () {},
+      onHover: (value) => setState(() => _hovered = value),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
+      // On a light page a hover is a wash one step up from the band.
+      hoverColor: AppColors.surfaceAlt,
+      mouseCursor: SystemMouseCursors.click,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.xs,
+          horizontal: AppSpacing.sm,
+        ),
+        child: AnimatedDefaultTextStyle(
+          duration: AppDurations.fast,
+          curve: AppCurves.standard,
+          style: AppText.bodySmall(context, color: color).copyWith(
+            // The underline is the hover affordance — showing it on every link
+            // makes the footer look like a wall of hyperlinks.
+            decoration:
+                _hovered ? TextDecoration.underline : TextDecoration.none,
+            decorationColor: color,
+          ),
+          child: Text(widget.label),
+        ),
+      ),
+    );
+  }
+}
+
+class _SubscribeColumn extends StatelessWidget {
+  const _SubscribeColumn();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // These three assets were drawn for a white page, and the page is white
+        // again — so they sit straight on the band. No plate, no card, nothing
+        // behind them.
+        Wrap(
+          spacing: AppSpacing.md,
+          runSpacing: AppSpacing.md,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Image.asset(
+              'assets/images/setter_ai.png',
+              height: 40,
+              fit: BoxFit.contain,
+            ),
+            Image.asset(
+              'assets/images/meta.png',
+              height: 32,
+              fit: BoxFit.contain,
             ),
           ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
+        const _EmailSubscribeField(),
+        const SizedBox(height: AppSpacing.lg),
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          alignment: Alignment.centerLeft,
+          child: SvgPicture.asset(
+            'assets/images/featured.svg',
+            width: 250,
+            height: 54,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The one gold moment in the whole footer.
+///
+/// The field itself is left to the global `inputDecorationTheme` — it owns the
+/// height, the hairline border and the gold focus ring, so this matches every
+/// other input in the app. The only override is the fill: the theme's off-white
+/// is a shade away from the muted footer band, so the field sits on plain white
+/// and reads as something you can type into.
+class _EmailSubscribeField extends StatelessWidget {
+  const _EmailSubscribeField();
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        TextField(
+          keyboardType: TextInputType.emailAddress,
+          style: AppText.body(context, color: AppColors.textPrimary),
+          // A caret is a thin stroke, so it takes the readable gold.
+          cursorColor: AppColors.primaryInk,
+          decoration: const InputDecoration(
+            hintText: 'Enter your Email',
+            fillColor: AppColors.surface,
+          ),
+        ),
+        const SizedBox(height: AppSpacing.s12),
+        // Stacked rather than tucked inside the field: on the 320 wide desktop
+        // column an inline button leaves no room to read what you typed.
+        ActionButton(
+          text: "Subscribe",
+          onPressed: () {},
+        ),
+      ],
+    );
+  }
+}
+
+class _FooterBottomBar extends StatelessWidget {
+  const _FooterBottomBar();
+
+  /// Styling comes from `dividerTheme` — a hairline in [AppColors.border].
+  Widget _divider() => const Divider();
+
+  @override
+  Widget build(BuildContext context) {
+    final legal = AppText.bodySmall(context, color: AppColors.textMuted);
+
+    if (context.isMobile) {
+      return Column(
+        children: [
+          _divider(),
+          SizedBox(height: context.blockGap),
+          Text("Setter AI LLC", style: legal),
+          const SizedBox(height: AppSpacing.md),
+          const _SocialIcons(),
+        ],
+      );
+    }
+
+    return Row(
+      children: [
+        Expanded(child: _divider()),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Setter AI LLC", style: legal),
+              const SizedBox(width: AppSpacing.lg),
+              const _SocialIcons(),
+            ],
+          ),
+        ),
+        Expanded(child: _divider()),
+      ],
+    );
+  }
+}
+
+class _SocialIcons extends StatelessWidget {
+  const _SocialIcons();
+
+  static const List<_SocialLink> _links = [
+    _SocialLink(Icons.play_circle_outline_rounded, 'YouTube'),
+    _SocialLink(Icons.share_outlined, 'Facebook'),
+    _SocialLink(Icons.chat_bubble_outline_rounded, 'Twitter'),
+    _SocialLink(Icons.photo_camera_outlined, 'Instagram'),
+    _SocialLink(Icons.work_outline_rounded, 'LinkedIn'),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: AppSpacing.xs,
+      runSpacing: AppSpacing.xs,
+      alignment: WrapAlignment.center,
+      children: [
+        for (final link in _links) _SocialIcon(link: link),
+      ],
+    );
+  }
+}
+
+class _SocialIcon extends StatefulWidget {
+  final _SocialLink link;
+
+  const _SocialIcon({required this.link});
+
+  @override
+  State<_SocialIcon> createState() => _SocialIconState();
+}
+
+class _SocialIconState extends State<_SocialIcon> {
+  bool _hovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: widget.link.label,
+      child: Semantics(
+        label: widget.link.label,
+        button: true,
+        child: InkWell(
+          onTap: () {},
+          onHover: (value) => setState(() => _hovered = value),
+          customBorder: const CircleBorder(),
+          hoverColor: AppColors.surfaceAlt,
+          mouseCursor: SystemMouseCursors.click,
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpacing.sm),
+            child: TweenAnimationBuilder<Color?>(
+              duration: AppDurations.fast,
+              curve: AppCurves.standard,
+              tween: ColorTween(
+                begin: AppColors.textSecondary,
+                end: _hovered ? AppColors.textPrimary : AppColors.textSecondary,
+              ),
+              builder: (context, color, _) => ExcludeSemantics(
+                child: Icon(
+                  widget.link.icon,
+                  color: color,
+                  size: context.responsive<double>(
+                    mobile: 20,
+                    tablet: 22,
+                    desktop: 22,
+                  ),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
