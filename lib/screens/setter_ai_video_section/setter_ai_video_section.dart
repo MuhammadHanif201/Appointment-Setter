@@ -1,125 +1,81 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:appointment_setter/widgets/vedio_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// Video on one side, a single claim on the other. Two columns only once there
+/// is real room for them — on tablets the pair stacks so neither half gets
+/// squeezed into an unreadable strip.
+///
+/// The band is white: the dark 16:9 well is the contrast in this section, and
+/// the statement band that follows it is the warm one.
 class SetterAIVideoSection extends StatelessWidget {
   const SetterAIVideoSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 479;
+    final stacked = !context.isDesktop;
 
-    final horizontalPadding = isMobile ? 16.0 : 58.0;
-    final verticalPadding = isMobile ? 40.0 : 120.0;
+    const video = YouTubePlayerWidget(videoId: 'ybcZQxpTrCs');
 
-    final videoWidth = isMobile ? screenWidth * 0.9 : 400.0;
-    final videoHeight = videoWidth * 9 / 16; // Maintain 16:9 aspect ratio
-
-    final headingFontSize = isMobile ? 24.0 : 43.2;
-    final headingHeight = 1.2;
-
-    return Container(
-      width: double.infinity,
-      color: Colors.white,
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
-      ),
-      child: isMobile
-          ?
-      Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+    return SectionContainer(
+      color: AppColors.background,
+      child: stacked
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: videoWidth,
-                  height: videoHeight,
-                  child: YouTubePlayerWidget(
-                    videoId: 'ybcZQxpTrCs',
-                  ),
+                // Capped so the frame does not sprawl across a wide tablet.
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 720),
+                  child: video,
                 ),
-                const SizedBox(height: 40),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: "Setter AI requires ",
-                    style: GoogleFonts.inter(
-                      fontSize: headingFontSize,
-                      height: headingHeight,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "zero change\n",
-                        style: GoogleFonts.inter(
-                          fontSize: headingFontSize,
-                          height: headingHeight,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF6F2EFF),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "to your business.",
-                        style: GoogleFonts.inter(
-                          fontSize: headingFontSize,
-                          height: headingHeight,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                SizedBox(height: context.blockGap),
+                const _Heading(textAlign: TextAlign.center),
               ],
             )
           : Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: videoWidth,
-                  height: 500,
-                  child: YouTubePlayerWidget(
-                    videoId: 'ybcZQxpTrCs',
-                  ),
-                ),
-                const SizedBox(width: 40),
-                Expanded(
-                  child: RichText(
-                    textAlign: TextAlign.left,
-                    text: TextSpan(
-                      text: "Setter AI requires ",
-                      style: GoogleFonts.inter(
-                        fontSize: headingFontSize,
-                        height: headingHeight,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                      children: [
-                        TextSpan(
-                          text: "zero change\n",
-                          style: GoogleFonts.inter(
-                            fontSize: headingFontSize,
-                            height: headingHeight,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFF6F2EFF),
-                          ),
-                        ),
-                        TextSpan(
-                          text: "to your business.",
-                          style: GoogleFonts.inter(
-                            fontSize: headingFontSize,
-                            height: headingHeight,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                const Expanded(flex: 6, child: video),
+                SizedBox(width: context.blockGap),
+                const Expanded(
+                  flex: 5,
+                  child: _Heading(textAlign: TextAlign.left),
                 ),
               ],
             ),
+    );
+  }
+}
+
+class _Heading extends StatelessWidget {
+  final TextAlign textAlign;
+
+  const _Heading({required this.textAlign});
+
+  @override
+  Widget build(BuildContext context) {
+    final style = context.responsive(
+      mobile: AppText.h2(context),
+      tablet: AppText.h1(context),
+    );
+
+    return Text.rich(
+      TextSpan(
+        text: "Setter AI requires ",
+        children: [
+          // The one gold moment in this section.
+          TextSpan(
+            text: "zero change\n",
+            style: style.copyWith(color: AppColors.primaryInk),
+          ),
+          const TextSpan(text: "to your business."),
+        ],
+      ),
+      textAlign: textAlign,
+      style: style,
     );
   }
 }
