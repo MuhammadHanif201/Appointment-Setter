@@ -1,6 +1,13 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
+/// The six-slider revenue calculator.
+///
+/// One gold moment, and it is the "Calculate Revenue Potential" button at the
+/// bottom. Everything above it — six tracks, six thumbs, six value chips — is
+/// deliberately neutral, because a repeated control is chrome, not emphasis.
 class SetterAICalculatorWidget extends StatefulWidget {
   const SetterAICalculatorWidget({super.key});
 
@@ -19,152 +26,123 @@ class _SetterAICalculatorWidgetState extends State<SetterAICalculatorWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        width: 700,
-        height: 952,
-        margin: const EdgeInsets.all(16),
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            )
-          ],
-        ),
-        child: ScrollConfiguration(
-          behavior: NoScrollIndicator(),
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: const Text(
-                      "Setter AI Value Calculator",
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Center(
-                    child: const Text(
-                      "See how Setter AI could multiply your revenue from leads",
-                      style: TextStyle(color: Colors.black54),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  buildSliderSection(
-                    question: "How many leads do you generate per month?",
-                    value: leadsPerMonth,
-                    min: 100,
-                    max: 20000,
-                    onChanged: (val) => setState(() => leadsPerMonth = val),
-                  ),
-                  const SizedBox(height: 32),
-                  buildSliderSection(
-                    question:
-                        "How fast are you currently following up new leads? (hours)",
-                    value: costPerLead,
-                    min: 1,
-                    max: 48,
-                    unit: "h",
-                    onChanged: (val) => setState(() => costPerLead = val),
-                  ),
-                  const SizedBox(height: 32),
-                  buildSliderSection(
-                    question:
-                        "Roughly what percentage of your leads reply to your first message?",
-                    value: closeRate,
-                    min: 10,
-                    max: 90,
-                    unit: "%",
-                    onChanged: (val) => setState(() => closeRate = val),
-                  ),
-                  const SizedBox(height: 32),
-                  buildSliderSection(
-                    question:
-                        "Out of conversations you start, how many turn into booked meetings?",
-                    value: avgDealSize,
-                    min: 5,
-                    max: 80,
-                    unit: "%",
-                    onChanged: (val) => setState(() => avgDealSize = val),
-                  ),
-                  const SizedBox(height: 32),
-                  buildSliderSection(
-                    question:
-                        "Of the meetings you take, how many become paying customers?",
-                    value: salesCycle,
-                    min: 10,
-                    max: 70,
-                    unit: "%",
-                    onChanged: (val) => setState(() => salesCycle = val),
-                  ),
-                  const SizedBox(height: 32),
-                  SizedBox(
-                    width: 900, // increased width here (adjust as needed)
-                    child: buildSliderSection(
-                      question: "What's the average deal size in dollars?",
-                      value: adBudget,
-                      min: 500,
-                      max: 500000,
-                      unit: "\$",
-                      onChanged: (val) => setState(() => adBudget = val),
-                    ),
-                  ),
-                  const SizedBox(height: 40),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      onPressed: () {
-                        // Add your calculation logic here
-                      },
+    final fieldGap = context.responsive<double>(
+      mobile: AppSpacing.lg,
+      tablet: AppSpacing.lg,
+      desktop: AppSpacing.xl,
+    );
 
-                      // have error here
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              "Calculate Revenue Potential",
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const Gap(10),
-                          const Icon(Icons.arrow_forward, color: Colors.white),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "Backed by a Harvard study",
-                      style: TextStyle(color: Colors.black54, fontSize: 12),
-                    ),
-                  ),
-                ],
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 700),
+        child: Container(
+          width: double.infinity,
+          padding: EdgeInsets.all(context.cardPad),
+          decoration: BoxDecoration(
+            // The enclosing section is the warm band, so the card is the white
+            // sheet on top of it. Depth is a hairline plus a quiet shadow —
+            // nothing heavier reads as premium on a light page.
+            color: AppColors.surface,
+            borderRadius: BorderRadius.circular(AppRadius.lg),
+            border: Border.all(color: AppColors.border),
+            boxShadow: AppShadows.card,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Center(
+                child: Text(
+                  "Setter AI Value Calculator",
+                  style: AppText.h3(context),
+                  textAlign: TextAlign.center,
+                ),
               ),
-            ),
+              const SizedBox(height: AppSpacing.sm),
+              Center(
+                child: Text(
+                  "See how Setter AI could multiply your revenue from leads",
+                  style: AppText.body(context),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              SizedBox(height: context.cardPad),
+              const Divider(),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question: "How many leads do you generate per month?",
+                value: leadsPerMonth,
+                min: 100,
+                max: 20000,
+                onChanged: (val) => setState(() => leadsPerMonth = val),
+              ),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question:
+                    "How fast are you currently following up new leads? (hours)",
+                value: costPerLead,
+                min: 1,
+                max: 48,
+                unit: "h",
+                onChanged: (val) => setState(() => costPerLead = val),
+              ),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question:
+                    "Roughly what percentage of your leads reply to your first message?",
+                value: closeRate,
+                min: 10,
+                max: 90,
+                unit: "%",
+                onChanged: (val) => setState(() => closeRate = val),
+              ),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question:
+                    "Out of conversations you start, how many turn into booked meetings?",
+                value: avgDealSize,
+                min: 5,
+                max: 80,
+                unit: "%",
+                onChanged: (val) => setState(() => avgDealSize = val),
+              ),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question:
+                    "Of the meetings you take, how many become paying customers?",
+                value: salesCycle,
+                min: 10,
+                max: 70,
+                unit: "%",
+                onChanged: (val) => setState(() => salesCycle = val),
+              ),
+              SizedBox(height: fieldGap),
+              buildSliderSection(
+                question: "What's the average deal size in dollars?",
+                value: adBudget,
+                min: 500,
+                max: 500000,
+                unit: "\$",
+                onChanged: (val) => setState(() => adBudget = val),
+              ),
+              SizedBox(height: context.blockGap),
+              ActionButton(
+                text: "Calculate Revenue Potential",
+                icon: Icons.arrow_forward,
+                size: ActionButtonSize.large,
+                expand: true,
+                onPressed: () {
+                  // Add your calculation logic here
+                },
+              ),
+              const SizedBox(height: AppSpacing.s12),
+              Center(
+                child: Text(
+                  "Backed by a Harvard study",
+                  style: AppText.caption(context),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -194,50 +172,45 @@ class _SetterAICalculatorWidgetState extends State<SetterAICalculatorWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Flexible(
+            Expanded(
               child: Text(
                 question,
-                style: const TextStyle(
-                    fontSize: 16, fontWeight: FontWeight.w500, height: 1.5),
+                style: AppText.label(context),
               ),
             ),
-
-            // Wrap with SizedBox with fixed max width or Flexible
-            SizedBox(
-              width: 105, // Adjust width as needed to fit typical values
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                alignment: Alignment.center, // center the text inside container
-                child: Text(
-                  formatValue(value),
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+            const SizedBox(width: AppSpacing.s12),
+            _ValuePill(label: formatValue(value)),
           ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.sm),
         SliderTheme(
+          // The global slider theme is gold, and this card stacks six sliders.
+          // Six gold tracks and six gold thumbs above the "Calculate Revenue
+          // Potential" button would leave the actual call to action with
+          // nothing to stand out against, so the slider chrome is demoted to
+          // ink on a hairline track. The filled run still reads as the value —
+          // it just stops competing for the accent.
           data: SliderTheme.of(context).copyWith(
-            trackHeight: 9,
-            activeTrackColor: Colors.deepPurple,
-            inactiveTrackColor: Colors.grey.withOpacity(0.1),
-            thumbColor: Colors.deepPurple,
-            overlayColor: Colors.deepPurple.withOpacity(0.2),
+            trackHeight: AppSpacing.sm,
+            activeTrackColor: AppColors.textPrimary,
+            inactiveTrackColor: AppColors.border,
+            thumbColor: AppColors.textPrimary,
+            overlayColor: AppColors.textPrimary.withValues(alpha: 0.08),
+            // Full-bleed track, so the min / max labels below line up with the
+            // two ends of the run.
             trackShape: _CustomTrackShape(),
-            overlayShape: SliderComponentShape.noOverlay,
+            thumbShape: const RoundSliderThumbShape(
+              enabledThumbRadius: 10,
+              elevation: 0,
+              pressedElevation: 0,
+            ),
+            overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+            // These are discrete sliders with tens of divisions, so Material
+            // would stipple tick marks along the track. The chip beside the
+            // question is already the exact readout; the stipple is noise.
+            tickMarkShape: SliderTickMarkShape.noTickMark,
           ),
           child: Slider(
             value: value,
@@ -247,17 +220,72 @@ class _SetterAICalculatorWidgetState extends State<SetterAICalculatorWidget> {
             onChanged: onChanged,
           ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpacing.xs),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(formatValue(min),
-                style: const TextStyle(color: Colors.black54)),
-            Text(formatValue(max),
-                style: const TextStyle(color: Colors.black54)),
+            Flexible(
+              child: Text(
+                formatValue(min),
+                style: AppText.caption(context),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            const SizedBox(width: AppSpacing.sm),
+            Flexible(
+              child: Text(
+                formatValue(max),
+                style: AppText.caption(context),
+                textAlign: TextAlign.end,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
           ],
         ),
       ],
+    );
+  }
+}
+
+/// The live readout beside each slider question.
+///
+/// A neutral chip, not a gold one: six of these stack down the card, and gilding
+/// a repeated readout spends the accent the primary button needs. It reads as a
+/// quiet input value — warm off-white fill, hairline edge, ink label. Tabular
+/// figures keep the chip from twitching while the slider is dragged, and the
+/// width floor stops it resizing between "5%" and "80%".
+class _ValuePill extends StatelessWidget {
+  final String label;
+
+  const _ValuePill({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    // Deliberately not animated: this redraws on every drag frame, so an
+    // implicit tween would only ever lag behind the thumb.
+    return Container(
+      constraints: const BoxConstraints(minWidth: 72),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s12,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surfaceAlt,
+        borderRadius: BorderRadius.circular(AppRadius.pill),
+        border: Border.all(color: AppColors.border),
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        label,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        textAlign: TextAlign.center,
+        style: AppText.label(context, color: AppColors.textPrimary).copyWith(
+          fontWeight: FontWeight.w600,
+          height: 1.2,
+          fontFeatures: const [FontFeature.tabularFigures()],
+        ),
+      ),
     );
   }
 }

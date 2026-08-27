@@ -1,153 +1,74 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:appointment_setter/widgets/setter_calculator_ai_widget.dart';
+import 'package:appointment_setter/widgets/title_text.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SalesMeetingCalculatorSection extends StatelessWidget {
   const SalesMeetingCalculatorSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
+    final bodyStyle = AppText.bodyLarge(context);
 
-        final isMobile = width < 479;
-        final isTablet = width >= 479 && width < 768;
-        final isDesktop = width >= 769;
-
-        // Responsive margins and paddings
-        final horizontalMargin = isMobile
-            ? 16.0
-            : isTablet
-                ? 24.0
-                : 40.0;
-        final horizontalPadding = isMobile
-            ? 16.0
-            : isTablet
-                ? 24.0
-                : 40.0;
-        final verticalPadding = isMobile
-            ? 24.0
-            : isTablet
-                ? 48.0
-                : 96.0;
-
-        // Responsive font sizes
-        final titleFontSize = isMobile
-            ? 24.0
-            : isTablet
-                ? 36.0
-                : 40.0;
-        final subtitleFontSize = isMobile ? 14.0 : 18.0;
-        final subtitleBoldFontSize = isMobile ? 15.0 : 19.0;
-        final buttonFontSize = isMobile ? 16.0 : 20.8;
-        final buttonHeight = isMobile ? 48.0 : 56.0;
-        final buttonWidth = isMobile ? 180.0 : 236.77;
-
-        // Spacing
-        final gap16 = isMobile ? 8.0 : 16.0;
-        final gap10 = isMobile ? 6.0 : 10.0;
-        final gap32 = isMobile ? 20.0 : 32.0;
-
-        return SingleChildScrollView(
-          child: Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              width: double.infinity,
-              constraints: const BoxConstraints(
-                maxWidth: 1000,
+    return SectionContainer(
+      // The warm band in the run of sections either side of it. It does two
+      // jobs: it breaks up a stretch of pure white so the page does not read as
+      // one sheet, and it gives the white calculator card something to lift off.
+      color: AppColors.surfaceAlt,
+      maxWidth: 1000,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          TitleText(
+            text: "How Many Sales Meetings Are You\n Leaving on the Table?",
+            style: AppText.h2(context),
+          ),
+          const SizedBox(height: AppSpacing.md),
+          // Capped narrower than the section so the lead paragraph keeps a
+          // readable measure on a wide desktop.
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 720),
+            child: Text.rich(
+              TextSpan(
+                text: "Use the calculator below to see what ",
+                style: bodyStyle,
+                children: [
+                  // The one emphasised phrase steps up to the primary text
+                  // colour rather than the accent — gold is reserved for the
+                  // readouts in the card and the call to action below it.
+                  TextSpan(
+                    text: "slow lead follow-up ",
+                    style: bodyStyle.copyWith(
+                      color: AppColors.textPrimary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  TextSpan(
+                    text:
+                        "is costing you - and how fast\n you could grow with Setter AI.",
+                    style: bodyStyle,
+                  ),
+                ],
               ),
-              margin: EdgeInsets.symmetric(horizontal: horizontalMargin),
-              color: Colors.white,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                  vertical: verticalPadding,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        "How Many Sales Meetings Are You\n Leaving on the Table?",
-                        style: GoogleFonts.inter(
-                          fontSize: titleFontSize,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    SizedBox(height: gap16),
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: "Use the calculator below to see what ",
-                        style: GoogleFonts.inter(
-                          fontSize: subtitleFontSize,
-                          height: 1.5,
-                          color: Colors.black,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: "slow lead follow-up ",
-                            style: GoogleFonts.inter(
-                              fontSize: subtitleBoldFontSize,
-                              height: 1.5,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.black,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                "is costing you - and how fast\n you could grow with Setter AI.",
-                            style: GoogleFonts.inter(
-                              fontSize: subtitleBoldFontSize,
-                              height: 1.5,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: gap10),
-                    const SetterAICalculatorWidget(),
-                    SizedBox(height: gap32),
-                    Container(
-                      height: buttonHeight,
-                      width: buttonWidth,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFF6F2EFF),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "GO live for 7 days",
-                            style: GoogleFonts.inter(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
-                              fontSize: buttonFontSize,
-                            ),
-                          ),
-                          const SizedBox(width: 5),
-                          const Icon(
-                            Icons.arrow_forward_outlined,
-                            color: Colors.white,
-                            size: 25.6,
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              textAlign: TextAlign.center,
             ),
           ),
-        );
-      },
+          SizedBox(height: context.blockGap),
+          const SetterAICalculatorWidget(),
+          SizedBox(height: context.blockGap),
+          ActionButton(
+            text: "GO live for 7 days",
+            icon: Icons.arrow_forward,
+            size: ActionButtonSize.large,
+            // Full bleed on a phone, intrinsic width from a tablet up.
+            expand: context.isMobile,
+            onPressed: () {},
+          ),
+        ],
+      ),
     );
   }
 }
