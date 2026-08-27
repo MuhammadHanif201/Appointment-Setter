@@ -1,225 +1,180 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/action_button.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// Headline + CTA on the left, the oversized "10s" stat on the right.
+///
+/// The stat is the one gold moment in this section, so the headline emphasis is
+/// carried by the text ramp and the button steps down to the outlined variant —
+/// nothing else competes for the accent.
 class LeadConversionSection extends StatelessWidget {
   const LeadConversionSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 479;
-    // Dynamic paddings
-    final horizontalPadding = isMobile ? 16.0 : 58.0;
-    final verticalPadding = isMobile ? 40.0 : 120.0;
-    // Font sizes responsive
-    final headingFontSize = isMobile ? 24.0 : 43.2;
-    final headingHeight = isMobile ? 1.3 : 1.2;
-    final buttonFontSize = isMobile ? 16.0 : 20.8;
-    final bigNumberFontSize = isMobile ? 80.0 : 180.0;
-    final descriptionFontSize = isMobile ? 14.0 : 16.0;
-    return Container(
-      width: double.infinity,
-      color: Colors.grey[200],
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
-      ),
+    final isMobile = context.isMobile;
+
+    return SectionContainer(
+      // White band. The featured quote above it is the warm one, so the two
+      // separate without a rule between them; the stat card below carries a
+      // hairline and a soft shadow, which is what lifts it off a white page.
+      color: AppColors.background,
       child: isMobile
           ? Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Top section (heading + button)
-                RichText(
+                const _ConversionHeadline(textAlign: TextAlign.center),
+                const SizedBox(height: AppSpacing.lg),
+                ActionButton(
+                  text: "Get Started",
+                  icon: Icons.arrow_forward_outlined,
+                  variant: ActionButtonVariant.outlined,
+                  size: ActionButtonSize.large,
+                  expand: true,
+                  // Without a handler `ActionButton` renders disabled: pale
+                  // hairline, muted label, no cursor or ink. The CTA has to
+                  // read as live.
+                  onPressed: () {},
+                ),
+                const SizedBox(height: AppSpacing.xl),
+                const _ConversionStat(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: "Setter AI is the\n",
-                    style: GoogleFonts.inter(
-                      fontSize: headingFontSize,
-                      height: headingHeight,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "fastest",
-                        style: GoogleFonts.inter(
-                          fontSize: headingFontSize,
-                          height: headingHeight,
-                          fontWeight: FontWeight.w700,
-                          color: const Color(0xFF6F2EFF),
-                        ),
-                      ),
-                      TextSpan(
-                        text:
-                            " way to turn leads\n into sales calls for\n businesses.",
-                        style: GoogleFonts.inter(
-                          fontSize: headingFontSize,
-                          height: headingHeight * 1.25,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  height: 48,
-                  width: 160,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF6F2EFF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Get Started",
-                          style: GoogleFonts.inter(
-                            color: Colors.white,
-                            fontSize: buttonFontSize,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.none,
-                          ),
-                        ),
-                        const SizedBox(width: 5),
-                        const Icon(
-                          Icons.arrow_forward_outlined,
-                          size: 20,
-                          color: Colors.white,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 40),
-                Text(
-                  "10s",
-                  style: GoogleFonts.inter(
-                    fontSize: bigNumberFontSize,
-                    fontWeight: FontWeight.w700,
-                    height: 1.0,
-                    color: const Color(0xFF6F2EFF),
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Text(
-                  "Setter AI follow-up with your leads in just 10 seconds.",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: descriptionFontSize,
-                    color: Colors.black,
-                  ),
                 ),
               ],
             )
           : Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Left section: Heading + Button
-                Flexible(
+                Expanded(
                   flex: 6,
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RichText(
-                        textAlign: TextAlign.start,
-                        text: TextSpan(
-                          text: "Setter AI is the\n",
-                          style: GoogleFonts.inter(
-                            fontSize: headingFontSize,
-                            height: headingHeight,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: "fastest",
-                              style: GoogleFonts.inter(
-                                fontSize: headingFontSize,
-                                height: headingHeight,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFF6F2EFF),
-                              ),
-                            ),
-                            TextSpan(
-                              text:
-                                  " way to turn leads\n into sales calls for\n businesses.",
-                              style: GoogleFonts.inter(
-                                fontSize: headingFontSize,
-                                height: headingHeight * 1.25,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        height: 56,
-                        width: 196,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF6F2EFF),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Get Started",
-                                style: GoogleFonts.inter(
-                                  color: Colors.white,
-                                  fontSize: buttonFontSize,
-                                  fontWeight: FontWeight.w700,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              const SizedBox(width: 5),
-                              const Icon(
-                                Icons.arrow_forward_outlined,
-                                size: 25,
-                                color: Colors.white,
-                              ),
-                            ],
-                          ),
-                        ),
+                      const _ConversionHeadline(textAlign: TextAlign.start),
+                      const SizedBox(height: AppSpacing.lg),
+                      ActionButton(
+                        text: "Get Started",
+                        icon: Icons.arrow_forward_outlined,
+                        variant: ActionButtonVariant.outlined,
+                        size: ActionButtonSize.large,
+                        onPressed: () {},
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 40),
+                SizedBox(width: context.blockGap),
                 // Right section: Big number + description
-                Flexible(
+                const Expanded(
                   flex: 6,
-                  child: Column(
+                  child: _ConversionStat(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "10s",
-                        style: GoogleFonts.inter(
-                          fontSize: bigNumberFontSize,
-                          fontWeight: FontWeight.w700,
-                          height: 1.0,
-                          color: const Color(0xFF6F2EFF),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        "Setter AI follow-up with your leads in just 10 seconds.",
-                        style: GoogleFonts.inter(
-                          fontSize: descriptionFontSize,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
+                    textAlign: TextAlign.start,
                   ),
                 ),
               ],
             ),
+    );
+  }
+}
+
+/// The "Setter AI is the *fastest* way ..." headline. The manual line breaks in
+/// the copy are preserved, but the text also soft wraps so it never overflows a
+/// narrow column.
+///
+/// Emphasis is two-tone rather than gold: the sentence sits on the secondary
+/// ink and the key word steps up to the primary ink.
+class _ConversionHeadline extends StatelessWidget {
+  final TextAlign textAlign;
+
+  const _ConversionHeadline({required this.textAlign});
+
+  @override
+  Widget build(BuildContext context) {
+    final baseStyle = AppText.h1(context, color: AppColors.textSecondary);
+    final emphasisStyle = AppText.h1(context);
+
+    return Text.rich(
+      TextSpan(
+        text: "Setter AI is the\n",
+        style: baseStyle,
+        children: [
+          TextSpan(
+            text: "fastest",
+            style: emphasisStyle,
+          ),
+          TextSpan(
+            text: " way to turn leads\n into sales calls for\n businesses.",
+            style: baseStyle,
+          ),
+        ],
+      ),
+      textAlign: textAlign,
+    );
+  }
+}
+
+/// The oversized "10s" stat and its caption, framed as a raised card so the
+/// number reads as the anchor of the section.
+///
+/// White card, hairline border and a soft shadow — on a light page depth comes
+/// from those three, not from heavy elevation.
+class _ConversionStat extends StatelessWidget {
+  final CrossAxisAlignment crossAxisAlignment;
+  final TextAlign textAlign;
+
+  /// Keeps the caption on a readable measure inside a wide card.
+  static const double _captionWidth = 460;
+
+  const _ConversionStat({
+    required this.crossAxisAlignment,
+    required this.textAlign,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isCentred = textAlign == TextAlign.center;
+
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(context.cardPad),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: AppColors.border),
+        boxShadow: AppShadows.soft,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: crossAxisAlignment,
+        children: [
+          // `AppText.stat` already resolves to `primaryInk`, which reads at
+          // 4.9:1 on white — the gold that has to be legible is never `primary`.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: isCentred ? Alignment.center : Alignment.centerLeft,
+            child: Text(
+              "10s",
+              style: AppText.stat(context),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.s12),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _captionWidth),
+            child: Text(
+              "Setter AI follow-up with your leads in just 10 seconds.",
+              textAlign: textAlign,
+              style: AppText.body(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

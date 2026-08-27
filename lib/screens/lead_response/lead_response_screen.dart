@@ -1,125 +1,94 @@
+import 'package:appointment_setter/theme/app_theme.dart';
+import 'package:appointment_setter/widgets/percentage_size_ext%20.dart';
+import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// The short statement section that follows the hero.
+///
+/// It carries exactly one accent moment — the gold half of the headline — so
+/// the rest of the block stays in the neutral text ramp.
 class LeadResponseSection extends StatelessWidget {
   const LeadResponseSection({super.key});
 
+  /// Measures. A centred headline stops reading well much past ~900, and the
+  /// paragraph under it wants to be narrower still.
+  static const double _headingWidth = 900;
+  static const double _bodyWidth = 760;
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final width = constraints.maxWidth;
+    // The copy hard-breaks after "Fix", so the first line has to fit "Hiring
+    // More SDRs Won’t Fix" in one go. At the h1 step it does that on desktop
+    // but soft-wraps below it, which strands "Fix" alone on a line of its own —
+    // so narrower screens drop a step rather than orphan a word.
+    final headingStyle = context.responsive(
+      mobile: AppText.h2(context),
+      desktop: AppText.h1(context),
+    );
+    final bodyStyle = AppText.bodyLarge(context);
 
-        // Breakpoints
-        final isMobile = width < 479;
-        final isTablet = width >= 479 && width < 768;
-        final isDesktop = width >= 769;
+    // Inline emphasis without spending gold: brighter ink, one weight step up.
+    final emphasisStyle =
+        AppText.bodyLarge(context, color: AppColors.textPrimary)
+            .copyWith(fontWeight: FontWeight.w600);
 
-        // Responsive paddings
-        final horizontalPadding = isMobile
-            ? 20.0
-            : isTablet
-                ? 40.0
-                : 57.594;
-
-        final verticalPadding = isMobile
-            ? 40.0
-            : isTablet
-                ? 80.0
-                : 120.0;
-
-        // Responsive font sizes
-        final titleFontSize = isMobile
-            ? 28.8
-            : isTablet
-                ? 43.2
-                : 43.2;
-
-        final subtitleFontSize = isMobile
-            ? 18.0
-            : isTablet
-                ? 18.0
-                : 18.0;
-
-        final containerHeight = isMobile ? null : 419.0;
-
-        final sizedBoxHeight = isMobile ? 12.0 : 20.0;
-
-        return Container(
-          height: containerHeight,
-          width: double.infinity,
-          decoration: const BoxDecoration(color: Color(0xfff0f0f0)),
-          child: Padding(
-            padding: EdgeInsets.only(
-              top: verticalPadding,
-              bottom: verticalPadding,
-              right: horizontalPadding,
-              left: horizontalPadding,
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: "Hiring More SDRs Won’t Fix\n a ",
-                    style: GoogleFonts.inter(
-                      color: Colors.black,
-                      fontSize: titleFontSize,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Broken Lead Response.",
-                        style: GoogleFonts.inter(
-                          color: const Color(0xFF6F2EFF),
-                          fontSize: titleFontSize,
-                          fontWeight: FontWeight.w700,
-                          height: 1.2,
-                        ),
-                      ),
-                    ],
+    return SectionContainer(
+      // The sections either side are white, so this statement band takes the
+      // warm off-white step: the three separate without a divider line.
+      color: AppColors.surfaceAlt,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _headingWidth),
+            child: Text.rich(
+              TextSpan(
+                text: "Hiring More SDRs Won’t Fix\n a ",
+                style: headingStyle,
+                children: [
+                  // The one gold moment in this band. `primaryInk`, never
+                  // `primary` — gold only reaches 2.4:1 on a light surface.
+                  TextSpan(
+                    text: "Broken Lead Response.",
+                    style: headingStyle.copyWith(color: AppColors.primaryInk),
                   ),
-                ),
-                SizedBox(height: sizedBoxHeight),
-                RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    text: "Automate first contact in under ",
-                    style: GoogleFonts.inter(
-                      fontSize: subtitleFontSize,
-                      color: Colors.black,
-                      height: 1.5,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: " 10 seconds",
-                        style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: subtitleFontSize,
-                          fontWeight: FontWeight.w700,
-                          height: 1.5,
-                        ),
-                      ),
-                      TextSpan(
-                        text:
-                            " - and convert up to 52%\n of your leads into meetings - without expanding your sales team.",
-                        style: GoogleFonts.inter(
-                          color: Colors.black,
-                          fontSize: subtitleFontSize,
-                          height: 1.5,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                ],
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
-        );
-      },
+          SizedBox(
+            height: context.responsive(
+              mobile: AppSpacing.s12,
+              tablet: AppSpacing.md,
+              desktop: AppSpacing.s20,
+            ),
+          ),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: _bodyWidth),
+            child: Text.rich(
+              TextSpan(
+                text: "Automate first contact in under ",
+                style: bodyStyle,
+                children: [
+                  TextSpan(
+                    text: " 10 seconds",
+                    style: emphasisStyle,
+                  ),
+                  TextSpan(
+                    text:
+                        " - and convert up to 52%\n of your leads into meetings - without expanding your sales team.",
+                    style: bodyStyle,
+                  ),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
