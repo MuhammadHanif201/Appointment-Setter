@@ -203,21 +203,30 @@ class _FooterLink extends StatefulWidget {
 
 class _FooterLinkState extends State<_FooterLink> {
   bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
-    // Rest is muted copy; hover lifts it to full white. Gold is reserved for
-    // the Subscribe button, so a hovered link brightens rather than tints.
-    final color =
-        _hovered ? AppColors.textOnDark : AppColors.textOnDarkMuted;
+    // Rest is muted copy; hover and keyboard focus lift it to full white and
+    // underline it. Gold is reserved for the Subscribe button, so a lifted
+    // link brightens rather than tints. Focus shares the hover treatment on
+    // purpose: the theme's focus wash is a 12% black meant for a white page,
+    // which is invisible on the dark band, so the label itself is the ring.
+    final lifted = _hovered || _focused;
+    final color = lifted ? AppColors.textOnDark : AppColors.textOnDarkMuted;
 
     return InkWell(
       onTap: () {},
       onHover: (value) => setState(() => _hovered = value),
+      onFocusChange: (value) => setState(() => _focused = value),
       borderRadius: BorderRadius.circular(AppRadius.sm),
-      // On the dark band a hover is a faint white wash, not a grey one — a
-      // solid grey would read as a smudge here.
+      // On the dark band every wash is a faint white one, not a grey one — a
+      // solid grey would read as a smudge here. The theme's defaults are all
+      // light-page greys, so hover, focus, press and ripple are set here.
       hoverColor: AppColors.surfaceOnDarkAlt,
+      focusColor: AppColors.surfaceOnDarkAlt,
+      highlightColor: AppColors.surfaceOnDarkAlt,
+      splashColor: AppColors.textOnDark.withValues(alpha: 0.10),
       mouseCursor: SystemMouseCursors.click,
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -231,7 +240,7 @@ class _FooterLinkState extends State<_FooterLink> {
             // The underline is the hover affordance — showing it on every link
             // makes the footer look like a wall of hyperlinks.
             decoration:
-                _hovered ? TextDecoration.underline : TextDecoration.none,
+                lifted ? TextDecoration.underline : TextDecoration.none,
             decorationColor: color,
           ),
           child: Text(widget.label),
@@ -319,10 +328,9 @@ class _LogoPlate extends StatelessWidget {
 ///
 /// The global `inputDecorationTheme` was written for a white page — off-white
 /// fill, grey hairline — and both vanish on the dark band, so the field carries
-/// the dark-surface equivalents: a faint white fill, a low-alpha white
-/// hairline, and the same gold focus ring every other input in the app has.
-/// Height, radius and padding are still inherited from the theme so the field
-/// matches the rest of the product.
+/// the dark-surface equivalents: a faint white fill and a low-alpha white
+/// hairline. Height, padding and the gold focus ring are still inherited from
+/// the theme, so the field focuses exactly like every other input in the app.
 class _EmailSubscribeField extends StatelessWidget {
   const _EmailSubscribeField();
 
@@ -344,23 +352,31 @@ class _EmailSubscribeField extends StatelessWidget {
             hintText: 'Enter your Email',
             hintStyle: AppText.body(context, color: AppColors.textOnDarkMuted),
             fillColor: AppColors.surfaceOnDarkAlt,
-            enabledBorder: OutlineInputBorder(
+            // The theme's hover is a 4% black wash for a white page, which is
+            // invisible here, so hover lifts with the same white wash the
+            // links use.
+            hoverColor: AppColors.surfaceOnDarkAlt,
+            // The resting hairline and the generic fallback both go on-dark;
+            // the focused and error borders keep coming from the theme.
+            border: OutlineInputBorder(
               borderRadius: radius,
               borderSide: const BorderSide(color: AppColors.borderOnDark),
             ),
-            focusedBorder: OutlineInputBorder(
+            enabledBorder: OutlineInputBorder(
               borderRadius: radius,
-              borderSide:
-                  const BorderSide(color: AppColors.primary, width: 1.5),
+              borderSide: const BorderSide(color: AppColors.borderOnDark),
             ),
           ),
         ),
         const SizedBox(height: AppSpacing.s12),
         // Stacked rather than tucked inside the field: on the 320 wide desktop
         // column an inline button leaves no room to read what you typed.
+        // The button sits on the dark band, so its focus ring is built for it
+        // rather than for the white page.
         ActionButton(
           text: "Subscribe",
           onPressed: () {},
+          surface: AppColors.surfaceDark,
         ),
       ],
     );
@@ -445,9 +461,16 @@ class _SocialIcon extends StatefulWidget {
 
 class _SocialIconState extends State<_SocialIcon> {
   bool _hovered = false;
+  bool _focused = false;
 
   @override
   Widget build(BuildContext context) {
+    // Hover and keyboard focus both lift the glyph to full white; focus adds
+    // a gold ring as well, because a brighter glyph alone is a weak signal on
+    // an icon. The ring follows the call screen's precedent: on the dark
+    // surface the brand gold clears contrast, so it is the ring colour itself.
+    final lifted = _hovered || _focused;
+
     return Tooltip(
       message: widget.link.label,
       // The global tooltip is a dark chip — invisible on a dark band — so on
@@ -463,17 +486,35 @@ class _SocialIconState extends State<_SocialIcon> {
         child: InkWell(
           onTap: () {},
           onHover: (value) => setState(() => _hovered = value),
+          onFocusChange: (value) => setState(() => _focused = value),
           customBorder: const CircleBorder(),
+          // The theme's washes are light-page greys, so every state is set
+          // here as a faint white wash.
           hoverColor: AppColors.surfaceOnDarkAlt,
+          focusColor: AppColors.surfaceOnDarkAlt,
+          highlightColor: AppColors.surfaceOnDarkAlt,
+          splashColor: AppColors.textOnDark.withValues(alpha: 0.10),
           mouseCursor: SystemMouseCursors.click,
-          child: Padding(
+          child: AnimatedContainer(
+            duration: AppDurations.fast,
+            curve: AppCurves.standard,
             padding: const EdgeInsets.all(AppSpacing.sm),
+            // Painted in the foreground so the ring takes no layout space:
+            // a border in `decoration` would widen every icon by its stroke
+            // even while transparent.
+            foregroundDecoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: _focused ? AppColors.primary : Colors.transparent,
+                width: 1.5,
+              ),
+            ),
             child: TweenAnimationBuilder<Color?>(
               duration: AppDurations.fast,
               curve: AppCurves.standard,
               tween: ColorTween(
                 begin: AppColors.textOnDarkMuted,
-                end: _hovered
+                end: lifted
                     ? AppColors.textOnDark
                     : AppColors.textOnDarkMuted,
               ),

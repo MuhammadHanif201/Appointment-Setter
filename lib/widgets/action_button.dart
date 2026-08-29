@@ -40,6 +40,12 @@ class ActionButton extends StatefulWidget {
   /// stops it accepting taps.
   final bool loading;
 
+  /// The surface the button sits on. It only shapes the keyboard focus ring:
+  /// the ring's separator band is painted in this colour, and on a dark
+  /// surface the ring itself is the brand gold rather than
+  /// [AppColors.primaryInk], which is the readable gold for a white page.
+  final Color surface;
+
   const ActionButton({
     super.key,
     required this.text,
@@ -51,6 +57,7 @@ class ActionButton extends StatefulWidget {
     this.foregroundColor,
     this.expand = false,
     this.loading = false,
+    this.surface = AppColors.background,
   });
 
   @override
@@ -147,19 +154,32 @@ class _ActionButtonState extends State<ActionButton> {
     );
   }
 
+  /// Whether [ActionButton.surface] is a dark backdrop such as
+  /// [AppColors.surfaceDark], where the readable-on-white gold is the *dim*
+  /// one and the brand gold is what clears contrast.
+  bool get _onDarkSurface => widget.surface.computeLuminance() < 0.2;
+
   /// Keyboard focus is an active state, so it is one of the few places gold is
   /// allowed outside the fill itself — but it has to survive both backdrops it
   /// touches. A single wash of the fill gold resolved to about #EDE1BA on the
-  /// white page (~1.2:1) and vanished, so the ring is drawn in the readable
-  /// gold at full strength with a page-coloured band between it and the
-  /// button; that band is what keeps it legible against a gold fill too.
+  /// white page (~1.2:1) and vanished, so the ring is drawn in a full-strength
+  /// gold with a surface-coloured band between it and the button; that band is
+  /// what keeps it legible against a gold fill too.
+  ///
+  /// Which gold depends on the surface: [AppColors.primaryInk] reads on white
+  /// (4.9:1) but is the dimmest thing on [AppColors.surfaceDark] (3.7:1), where
+  /// the brand [AppColors.primary] clears 7.6:1 — the same call the call
+  /// screen makes for its live ring.
   ///
   /// Order matters: the list is painted front to back, so the wide gold ring
   /// goes first and the narrow separator lands on top of its inner edge.
   List<BoxShadow>? get _focusRing => _focused && _interactive
-      ? const [
-          BoxShadow(color: AppColors.primaryInk, spreadRadius: 4),
-          BoxShadow(color: AppColors.background, spreadRadius: 2),
+      ? [
+          BoxShadow(
+            color: _onDarkSurface ? AppColors.primary : AppColors.primaryInk,
+            spreadRadius: 4,
+          ),
+          BoxShadow(color: widget.surface, spreadRadius: 2),
         ]
       : null;
 
