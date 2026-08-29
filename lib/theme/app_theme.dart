@@ -58,10 +58,11 @@ class AppColors {
   /// rather than tinting whole areas.
   static const Color surfaceAlt = Color(0xFFF7F8FA);
 
-  /// Muted panel one step further in — nested content, the footer.
+  /// Muted panel one step further in — nested content, quiet inner panels.
   static const Color surfaceMuted = Color(0xFFF1F2F5);
 
-  /// The one genuinely dark surface: video letterboxes and the call screen.
+  /// The genuinely dark surfaces: video letterboxes, the call screen and the
+  /// footer band that closes the page.
   /// Anything drawn on it must use [textOnDark] / [textOnDarkMuted].
   static const Color surfaceDark = Color(0xFF0E1422);
 
@@ -76,7 +77,8 @@ class AppColors {
   /// Tertiary copy: helper text, metadata, disabled labels.
   static const Color textMuted = Color(0xFF868C99);
 
-  /// For copy placed on [surfaceDark] — the dark call screen and video frames.
+  /// For copy placed on [surfaceDark] — the call screen, video frames and the
+  /// footer.
   static const Color textOnDark = Color(0xFFF8F7F2);
   static const Color textOnDarkMuted = Color(0xFFB4BAC6);
 

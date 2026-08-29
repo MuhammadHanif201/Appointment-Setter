@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 /// Lifts a surface off [AppColors.surfaceDark].
 ///
-/// This screen is the one deliberately dark surface in the product, so depth
+/// This screen is a deliberately dark surface (like the footer), so depth
 /// here cannot come from a shadow — a black shadow on a near-black page is
 /// invisible. Instead a panel is a faint wash of [AppColors.textOnDark] plus a
 /// hairline of the same, which is the dark-surface equivalent of the light

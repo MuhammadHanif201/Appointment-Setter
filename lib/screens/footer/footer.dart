@@ -58,13 +58,15 @@ const List<_LinkGroup> _legalGroups = [
   _LinkGroup('Industries', ['Solar']),
 ];
 
-/// The muted band that closes the page.
+/// The dark band that closes the page.
 ///
-/// It is [AppColors.surfaceMuted] — one step in from the white page, which is
-/// what makes it read as the end of the document without inverting the whole
-/// theme. Everything inside is deliberately quiet: links are secondary text
-/// that lift to primary on hover, headings are plain titles, and the only gold
-/// in the whole block is the Subscribe button.
+/// It is [AppColors.surfaceDark] — the page inverts for its last section, so
+/// the footer reads as the end of the document rather than one more white
+/// block. Everything on it follows the dark-surface rules from the theme: copy
+/// is [AppColors.textOnDark] / [AppColors.textOnDarkMuted], lines are
+/// [AppColors.borderOnDark] and hover washes are [AppColors.surfaceOnDarkAlt].
+/// Links are muted and lift to full white on hover; the only gold in the whole
+/// block is the Subscribe button.
 class FooterSection extends StatelessWidget {
   const FooterSection({super.key});
 
@@ -73,7 +75,7 @@ class FooterSection extends StatelessWidget {
     final gap = context.blockGap;
 
     return SectionContainer(
-      color: AppColors.surfaceMuted,
+      color: AppColors.surfaceDark,
       // Ink has to be painted on a Material; the section is a plain Container,
       // so give the whole footer a transparent one.
       child: Material(
@@ -178,7 +180,10 @@ class _FooterLinkColumn extends StatelessWidget {
         // so the heading and the list share one left edge.
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-          child: Text(group.title, style: AppText.title(context)),
+          child: Text(
+            group.title,
+            style: AppText.title(context, color: AppColors.textOnDark),
+          ),
         ),
         const SizedBox(height: AppSpacing.s12),
         for (final link in group.links) _FooterLink(label: link),
@@ -201,16 +206,18 @@ class _FooterLinkState extends State<_FooterLink> {
 
   @override
   Widget build(BuildContext context) {
-    // Rest is secondary copy; hover lifts it to primary ink. Gold is reserved
-    // for the Subscribe button, so a hovered link darkens rather than tints.
-    final color = _hovered ? AppColors.textPrimary : AppColors.textSecondary;
+    // Rest is muted copy; hover lifts it to full white. Gold is reserved for
+    // the Subscribe button, so a hovered link brightens rather than tints.
+    final color =
+        _hovered ? AppColors.textOnDark : AppColors.textOnDarkMuted;
 
     return InkWell(
       onTap: () {},
       onHover: (value) => setState(() => _hovered = value),
       borderRadius: BorderRadius.circular(AppRadius.sm),
-      // On a light page a hover is a wash one step up from the band.
-      hoverColor: AppColors.surfaceAlt,
+      // On the dark band a hover is a faint white wash, not a grey one — a
+      // solid grey would read as a smudge here.
+      hoverColor: AppColors.surfaceOnDarkAlt,
       mouseCursor: SystemMouseCursors.click,
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -243,29 +250,35 @@ class _SubscribeColumn extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        // These three assets were drawn for a white page, and the page is white
-        // again — so they sit straight on the band. No plate, no card, nothing
-        // behind them.
         Wrap(
           spacing: AppSpacing.md,
           runSpacing: AppSpacing.md,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
+            // The wordmark is white on transparent, so it sits straight on the
+            // dark band — this is the surface it was drawn for.
             Image.asset(
               'assets/images/setter_ai.png',
               height: 40,
               fit: BoxFit.contain,
             ),
-            Image.asset(
-              'assets/images/meta.png',
-              height: 32,
-              fit: BoxFit.contain,
+            // The Meta badge ships with an opaque white background, so it is
+            // framed as a deliberate white plate rather than left as a raw
+            // rectangle punched out of the dark band.
+            const _LogoPlate(
+              child: Image(
+                image: AssetImage('assets/images/meta.png'),
+                height: 28,
+                fit: BoxFit.contain,
+              ),
             ),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
         const _EmailSubscribeField(),
         const SizedBox(height: AppSpacing.lg),
+        // The Product Hunt badge draws its own white card, so it needs no
+        // plate of its own.
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,
@@ -280,30 +293,66 @@ class _SubscribeColumn extends StatelessWidget {
   }
 }
 
+/// A small white card for a partner mark that was drawn for a light surface.
+class _LogoPlate extends StatelessWidget {
+  final Widget child;
+
+  const _LogoPlate({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.s12,
+        vertical: AppSpacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      child: child,
+    );
+  }
+}
+
 /// The one gold moment in the whole footer.
 ///
-/// The field itself is left to the global `inputDecorationTheme` — it owns the
-/// height, the hairline border and the gold focus ring, so this matches every
-/// other input in the app. The only override is the fill: the theme's off-white
-/// is a shade away from the muted footer band, so the field sits on plain white
-/// and reads as something you can type into.
+/// The global `inputDecorationTheme` was written for a white page — off-white
+/// fill, grey hairline — and both vanish on the dark band, so the field carries
+/// the dark-surface equivalents: a faint white fill, a low-alpha white
+/// hairline, and the same gold focus ring every other input in the app has.
+/// Height, radius and padding are still inherited from the theme so the field
+/// matches the rest of the product.
 class _EmailSubscribeField extends StatelessWidget {
   const _EmailSubscribeField();
 
   @override
   Widget build(BuildContext context) {
+    final radius = BorderRadius.circular(AppRadius.md);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         TextField(
           keyboardType: TextInputType.emailAddress,
-          style: AppText.body(context, color: AppColors.textPrimary),
-          // A caret is a thin stroke, so it takes the readable gold.
-          cursorColor: AppColors.primaryInk,
-          decoration: const InputDecoration(
+          style: AppText.body(context, color: AppColors.textOnDark),
+          // A caret is a thin stroke; on a dark fill the light gold is the
+          // one that stays visible.
+          cursorColor: AppColors.primaryLight,
+          decoration: InputDecoration(
             hintText: 'Enter your Email',
-            fillColor: AppColors.surface,
+            hintStyle: AppText.body(context, color: AppColors.textOnDarkMuted),
+            fillColor: AppColors.surfaceOnDarkAlt,
+            enabledBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: const BorderSide(color: AppColors.borderOnDark),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide:
+                  const BorderSide(color: AppColors.primary, width: 1.5),
+            ),
           ),
         ),
         const SizedBox(height: AppSpacing.s12),
@@ -321,12 +370,13 @@ class _EmailSubscribeField extends StatelessWidget {
 class _FooterBottomBar extends StatelessWidget {
   const _FooterBottomBar();
 
-  /// Styling comes from `dividerTheme` — a hairline in [AppColors.border].
-  Widget _divider() => const Divider();
+  /// The theme's divider is a grey hairline for white pages; on the dark band
+  /// the line is the low-alpha white the theme reserves for dark surfaces.
+  Widget _divider() => const Divider(color: AppColors.borderOnDark);
 
   @override
   Widget build(BuildContext context) {
-    final legal = AppText.bodySmall(context, color: AppColors.textMuted);
+    final legal = AppText.bodySmall(context, color: AppColors.textOnDarkMuted);
 
     if (context.isMobile) {
       return Column(
@@ -400,6 +450,13 @@ class _SocialIconState extends State<_SocialIcon> {
   Widget build(BuildContext context) {
     return Tooltip(
       message: widget.link.label,
+      // The global tooltip is a dark chip — invisible on a dark band — so on
+      // the footer it inverts to a white chip with dark text.
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+      ),
+      textStyle: AppText.caption(context, color: AppColors.textPrimary),
       child: Semantics(
         label: widget.link.label,
         button: true,
@@ -407,7 +464,7 @@ class _SocialIconState extends State<_SocialIcon> {
           onTap: () {},
           onHover: (value) => setState(() => _hovered = value),
           customBorder: const CircleBorder(),
-          hoverColor: AppColors.surfaceAlt,
+          hoverColor: AppColors.surfaceOnDarkAlt,
           mouseCursor: SystemMouseCursors.click,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.sm),
@@ -415,8 +472,10 @@ class _SocialIconState extends State<_SocialIcon> {
               duration: AppDurations.fast,
               curve: AppCurves.standard,
               tween: ColorTween(
-                begin: AppColors.textSecondary,
-                end: _hovered ? AppColors.textPrimary : AppColors.textSecondary,
+                begin: AppColors.textOnDarkMuted,
+                end: _hovered
+                    ? AppColors.textOnDark
+                    : AppColors.textOnDarkMuted,
               ),
               builder: (context, color, _) => ExcludeSemantics(
                 child: Icon(
