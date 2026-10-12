@@ -10,6 +10,7 @@ import 'package:appointment_setter/widgets/section_container.dart';
 import 'package:appointment_setter/widgets/title_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AiAgentSection extends StatefulWidget {
   const AiAgentSection({super.key});
@@ -134,6 +135,25 @@ class _AiAgentSectionState extends State<AiAgentSection>
   }
 
   Future<void> _startCall() async {
+    // Ask before connecting, so the agent can hear the caller from the first
+    // word. Android does not always prompt on its own when the call starts.
+    final micStatus = await Permission.microphone.request();
+    if (!micStatus.isGranted) {
+      debugPrint('❌ Microphone permission denied: $micStatus');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text(
+              'Microphone permission is required to talk to the agent.'),
+          action: SnackBarAction(
+            label: 'Open Settings',
+            onPressed: () => openAppSettings(),
+          ),
+        ),
+      );
+      return;
+    }
+
     try {
       debugPrint("🔍 Getting AuthController...");
       final authController = Get.find<AuthController>();
@@ -142,22 +162,22 @@ class _AiAgentSectionState extends State<AiAgentSection>
       debugPrint("👉 selectedLabel: $_selectedLabel");
       debugPrint("👉 selectedAgent: $_activeAgent");
 
-      final token = await authController.getLiveKitToken(
+      final session = await authController.startSession(
         selectedLabel: _selectedLabel,
         selectedAgent: _activeAgent,
       );
 
-      debugPrint("🪪 Token received: $token");
-
-      if (token == null) {
+      if (session == null) {
         debugPrint('❌ Failed to get token');
         return;
       }
 
-      debugPrint("🔌 Connecting to LiveKit room...");
+      debugPrint("🪪 Token received for room ${session.roomName}");
+
+      debugPrint("🔌 Connecting to LiveKit at ${session.serverUrl}...");
       final room = await LiveKitService.connectToRoom(
-        url: 'wss://appointmentsetter-7p2s97kw.livekit.cloud',
-        token: token,
+        url: session.serverUrl,
+        token: session.token,
       );
 
       debugPrint("🎙️ Enabling microphone...");

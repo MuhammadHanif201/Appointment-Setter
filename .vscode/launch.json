@@ -1,0 +1,23 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // Real Android phone on USB. The pre-launch task forwards the phone's
+      // port 8000 to the backend running on this computer.
+      "name": "Android phone (USB)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "preLaunchTask": "Forward backend port to phone",
+      "toolArgs": ["--dart-define=BACKEND_URL=http://localhost:8000"]
+    },
+    {
+      // iOS simulator, Android emulator or web. These reach the backend
+      // without any extra setup.
+      "name": "Simulator or emulator",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart"
+    }
+  ]
+}
