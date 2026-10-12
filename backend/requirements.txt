@@ -1,0 +1,8 @@
+# Python 3.10 or newer is required (the Anthropic SDK 1.x needs it).
+livekit-agents[silero]==1.8.6
+livekit-plugins-google==1.8.6
+livekit-api==1.2.1
+anthropic==1.13.0
+fastapi==0.143.0
+uvicorn[standard]==0.54.0
+python-dotenv==1.2.4
